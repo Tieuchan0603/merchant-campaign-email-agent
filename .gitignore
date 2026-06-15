@@ -4,21 +4,43 @@
 # Python cache
 __pycache__/
 *.py[cod]
+*$py.class
 *.pyo
 
-# Virtual environment
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Virtual environments
 venv/
 .venv/
 env/
+ENV/
+env.bak/
+venv.bak/
 
-# OS files
+# Testing
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+
+# IDEs
+.vscode/
+.idea/
+.ruff_cache/
+.mypy_cache/
+
+# OS
 .DS_Store
 Thumbs.db
 
-# IDE
-.vscode/
-.idea/
+# Jupyter
+.ipynb_checkpoints
 
-# Approved emails are user data — optionally exclude from git
-# Uncomment the line below if you do NOT want to commit approved emails:
+# Approved emails: these are user data kept in git by default.
+# Uncomment to exclude them:
 # approved_emails/*.txt
