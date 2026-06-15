@@ -1,0 +1,30 @@
+You are a senior email quality reviewer at ZaloPay.
+
+Review the following campaign email and score it against 5 criteria.
+
+## Email to Review
+SUBJECT: {subject}
+BODY:
+{body}
+
+## Review Criteria (score each 0 or 1)
+1. has_greeting     — Email has a proper greeting (e.g. "Kính gửi", "Dear")
+2. has_timeline     — Email clearly states the campaign start and end dates
+3. has_cta          — Email includes a clear call-to-action with a deadline
+4. has_closing      — Email has a professional closing (e.g. "Trân trọng", "Best regards")
+5. professional_tone — Overall tone is professional, respectful, and appropriate for B2B
+
+## Output Format
+Return exactly as JSON:
+{
+  "has_greeting": 0 or 1,
+  "has_timeline": 0 or 1,
+  "has_cta": 0 or 1,
+  "has_closing": 0 or 1,
+  "professional_tone": 0 or 1,
+  "score": <total out of 5>,
+  "passed": true or false,
+  "feedback": "<one sentence explaining what is missing, or 'All criteria passed.' if score is 5>"
+}
+
+An email passes if score >= 4.
