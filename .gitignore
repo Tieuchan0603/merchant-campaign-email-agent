@@ -44,3 +44,14 @@ Thumbs.db
 # Approved emails: these are user data kept in git by default.
 # Uncomment to exclude them:
 # approved_emails/*.txt
+.greennode.json
+
+# Claude Code internal files
+.claude/
+
+# AgentBase skill configs (local tooling)
+.agentbase/
+
+# Streamlit runtime logs
+streamlit.log
+streamlit.err

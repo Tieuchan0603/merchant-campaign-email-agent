@@ -1,0 +1,13 @@
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
+.greennode.json
+.git
+.gitignore
+.pytest_cache
+node_modules
+.DS_Store
+.greennode.json

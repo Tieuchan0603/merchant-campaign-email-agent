@@ -12,8 +12,11 @@ load_dotenv()
 PROJECT_ROOT = Path(__file__).parent.parent
 PROMPT_FILE = PROJECT_ROOT / "prompts" / "email_generation.txt"
 
-DEFAULT_MODEL = "claude-sonnet-4-6"
+# LLM config — defaults target the GreenNode MaaS Anthropic-compatible endpoint.
+# Swap models by setting LLM_MODEL in .env (e.g. qwen/qwen3-5-27b, google/gemma-4-31b-it).
+DEFAULT_MODEL = os.getenv("LLM_MODEL", "minimax/minimax-m2.5")
 DEFAULT_MAX_TOKENS = 1024
+LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://maas-llm-aiplatform-hcm.api.vngcloud.vn")
 
 
 class EmailGenerator:
@@ -46,21 +49,25 @@ class EmailGenerator:
         Initialize and load the prompt template.
 
         Args:
-            model: Claude model name. Default is claude-sonnet-4-6.
+            model: LLM model name. Defaults to LLM_MODEL env (minimax/minimax-m2.5 on MaaS).
 
         Raises:
-            EnvironmentError: If ANTHROPIC_API_KEY is missing from .env.
+            EnvironmentError: If neither LLM_API_KEY nor ANTHROPIC_API_KEY is set.
             FileNotFoundError: If prompts/email_generation.txt is missing.
         """
-        api_key = os.getenv("ANTHROPIC_API_KEY")
-        if not api_key:
-            raise EnvironmentError(
-                "ANTHROPIC_API_KEY not found.\n"
-                "Please copy .env.example to .env and fill in your API key."
-            )
-
-        # anthropic.Anthropic() is the client object we use to call Claude.
-        self.client = anthropic.Anthropic(api_key=api_key)
+        # Prefer the GreenNode MaaS key (Bearer auth against the MaaS endpoint).
+        # Fall back to a standard Anthropic API key for local development.
+        llm_key = os.getenv("LLM_API_KEY")
+        if llm_key:
+            self.client = anthropic.Anthropic(base_url=LLM_BASE_URL, auth_token=llm_key)
+        else:
+            api_key = os.getenv("ANTHROPIC_API_KEY")
+            if not api_key:
+                raise EnvironmentError(
+                    "No LLM credentials found.\n"
+                    "Set LLM_API_KEY (GreenNode MaaS) or ANTHROPIC_API_KEY in .env."
+                )
+            self.client = anthropic.Anthropic(api_key=api_key)
         self.model = model
 
         # Load the prompt template once at startup, not on every generate() call.
