@@ -191,8 +191,10 @@ class EmailGenerator:
             ),
             messages=[{"role": "user", "content": prompt}],
         )
-        # message.content is a list; the first item is the text block.
-        return message.content[0].text
+        text_block = next((b for b in message.content if hasattr(b, "text")), None)
+        if text_block is None:
+            raise ValueError("No text block in model response.")
+        return text_block.text
 
     def _parse_response(self, raw_response: str) -> dict:
         """

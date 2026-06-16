@@ -211,7 +211,10 @@ Return ONLY a valid JSON object. No markdown, no text outside the JSON.
             ),
             messages=[{"role": "user", "content": prompt}],
         )
-        return message.content[0].text
+        text_block = next((b for b in message.content if hasattr(b, "text")), None)
+        if text_block is None:
+            raise ValueError("No text block in model response.")
+        return text_block.text
 
     def _clean_json(self, raw: str) -> str:
         """
