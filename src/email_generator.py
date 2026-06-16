@@ -146,7 +146,7 @@ class EmailGenerator:
 
         samples_text = (
             approved_samples.strip()
-            or "Chua co email mau. Hay viet theo phong cach chuyen nghiep cua ZaloPay."
+            or "Chua co email mau. Hay viet theo phong cach chuyen nghiep cua Zalopay."
         )
         instruction_text = (
             user_instruction.strip()

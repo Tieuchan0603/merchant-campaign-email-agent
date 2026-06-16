@@ -32,8 +32,8 @@ SAMPLE_CAMPAIGN = {
 }
 
 VALID_JSON_RESPONSE = json.dumps({
-    "subject": "Đề xuất triển khai CTKM World Cup 2026 cùng ZaloPay",
-    "body": "Kính gửi Anh/Chị KFC,\n\nNội dung email...\n\nTrân trọng,\nĐội ngũ ZaloPay",
+    "subject": "Đề xuất triển khai CTKM World Cup 2026 cùng Zalopay",
+    "body": "Kính gửi Anh/Chị KFC,\n\nNội dung email...\n\nTrân trọng,\nĐội ngũ Zalopay",
 })
 
 
@@ -77,7 +77,7 @@ def test_parse_valid_json():
     gen = make_generator_with_mock(VALID_JSON_RESPONSE)
     result = gen.generate(SAMPLE_CAMPAIGN)
 
-    assert result["subject"] == "Đề xuất triển khai CTKM World Cup 2026 cùng ZaloPay"
+    assert result["subject"] == "Đề xuất triển khai CTKM World Cup 2026 cùng Zalopay"
     assert "Kính gửi" in result["body"]
     assert "error" not in result
 

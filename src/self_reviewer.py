@@ -143,7 +143,7 @@ class EmailReviewer:
         weaknesses_text = "\n".join(f"- {w}" for w in weaknesses) or "None identified."
         suggestions_text = "\n".join(f"- {s}" for s in suggestions) or "No suggestions."
 
-        prompt = f"""You are a professional email writer at ZaloPay.
+        prompt = f"""You are a professional email writer at Zalopay.
 
 Below is a campaign email that did not pass quality review. Your task is to fix it.
 

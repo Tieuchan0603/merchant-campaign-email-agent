@@ -32,8 +32,8 @@ SAMPLE_CAMPAIGN = {
 }
 
 GOOD_EMAIL = {
-    "subject": "De xuat CTKM World Cup 2026 cung ZaloPay",
-    "body": "Kinh gui Anh/Chi KFC,\n\nNoi dung...\n\nTran trong,\nZaloPay",
+    "subject": "De xuat CTKM World Cup 2026 cung Zalopay",
+    "body": "Kinh gui Anh/Chi KFC,\n\nNoi dung...\n\nTran trong,\nZalopay",
     "raw_response": '{"subject": "...", "body": "..."}',
 }
 
@@ -56,8 +56,8 @@ FAILING_REVIEW = {
 }
 
 FIXED_EMAIL = {
-    "subject": "De xuat CTKM World Cup 2026 cung ZaloPay (fixed)",
-    "body": "Kinh gui Anh/Chi KFC,\n\n[Fixed content]\n\nTran trong,\nZaloPay",
+    "subject": "De xuat CTKM World Cup 2026 cung Zalopay (fixed)",
+    "body": "Kinh gui Anh/Chi KFC,\n\n[Fixed content]\n\nTran trong,\nZalopay",
     "raw_response": '{"subject": "...", "body": "..."}',
 }
 

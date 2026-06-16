@@ -24,13 +24,13 @@ from src.self_reviewer import EmailReviewer, PASS_THRESHOLD
 # Shared test data
 # ---------------------------------------------------------------------------
 
-GOOD_EMAIL_SUBJECT = "De xuat hop tac CTKM World Cup 2026 cung ZaloPay"
+GOOD_EMAIL_SUBJECT = "De xuat hop tac CTKM World Cup 2026 cung Zalopay"
 GOOD_EMAIL_BODY = (
     "Kinh gui Anh/Chi KFC,\n\n"
-    "ZaloPay tran trong de xuat chuong trinh: Giam 20k cho don 99k.\n"
+    "Zalopay tran trong de xuat chuong trinh: Giam 20k cho don 99k.\n"
     "Thoi gian: 1/7 - 31/7/2026.\n"
     "Vui long xac nhan truoc ngay 20/6 de chung toi trien khai dung han.\n\n"
-    "Tran trong,\nDoi ngu ZaloPay"
+    "Tran trong,\nDoi ngu Zalopay"
 )
 
 WEAK_EMAIL_SUBJECT = "Hello"
@@ -69,8 +69,8 @@ FAILING_REVIEW_RESPONSE = json.dumps({
 })
 
 VALID_FIX_RESPONSE = json.dumps({
-    "subject": "De xuat hop tac CTKM World Cup 2026 cung ZaloPay",
-    "body": "Kinh gui Anh/Chi KFC,\n\n[improved body]\n\nTran trong,\nDoi ngu ZaloPay",
+    "subject": "De xuat hop tac CTKM World Cup 2026 cung Zalopay",
+    "body": "Kinh gui Anh/Chi KFC,\n\n[improved body]\n\nTran trong,\nDoi ngu Zalopay",
 })
 
 

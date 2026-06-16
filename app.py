@@ -10,11 +10,20 @@
 # Business logic lives entirely in src/agent.py.
 # Run this app with:  streamlit run app.py
 
+import os
 import sys
 from pathlib import Path
 from datetime import datetime
 
 import streamlit as st
+
+# Bridge Streamlit Cloud secrets → os.environ so src/ code can use os.getenv() normally
+try:
+    for _k, _v in st.secrets.items():
+        if isinstance(_v, str):
+            os.environ.setdefault(_k, _v)
+except Exception:
+    pass
 
 # Make sure Python can find the src/ package
 sys.path.insert(0, str(Path(__file__).parent))
