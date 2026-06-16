@@ -29,7 +29,7 @@ REVIEW_PROMPT_FILE = PROJECT_ROOT / "prompts" / "self_review.txt"
 # LLM config — defaults target the GreenNode MaaS Anthropic-compatible endpoint.
 # Swap models by setting LLM_MODEL in .env (e.g. qwen/qwen3-5-27b, google/gemma-4-31b-it).
 DEFAULT_MODEL = os.getenv("LLM_MODEL", "minimax/minimax-m2.5")
-DEFAULT_MAX_TOKENS = 1024
+DEFAULT_MAX_TOKENS = 2048
 LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://maas-llm-aiplatform-hcm.api.vngcloud.vn")
 
 # An email passes review if its score meets this threshold (out of 5).

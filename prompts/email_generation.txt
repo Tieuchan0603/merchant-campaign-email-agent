@@ -20,6 +20,9 @@ Your task is to write a campaign collaboration email to a merchant partner in Vi
 ## Additional Instruction from User
 {user_instruction}
 
+## LANGUAGE RULE — MANDATORY
+You MUST write the entire email in Vietnamese. Do NOT use English under any circumstances.
+
 ## Email Requirements
 Write a professional B2B email in Vietnamese that includes:
 1. A warm, respectful greeting (e.g. "Kính gửi Anh/Chị...")
