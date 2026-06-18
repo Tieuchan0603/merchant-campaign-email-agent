@@ -29,7 +29,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 APPROVED_EMAILS_DIR = PROJECT_ROOT / "approved_emails"
 
 # Total attempts = 1 initial generation + MAX_RETRIES auto-fix rounds
-MAX_RETRIES = 2
+MAX_RETRIES = 1
 
 
 class EmailAgent:
@@ -91,7 +91,13 @@ class EmailAgent:
     # Public method
     # -----------------------------------------------------------------------
 
-    def run(self, merchant_name: str, user_instruction: str = "") -> dict:
+    def run(
+        self,
+        merchant_name: str,
+        user_instruction: str = "",
+        campaign_info: dict = None,
+        skip_review: bool = False,
+    ) -> dict:
         """
         Execute the full email generation pipeline for a given merchant.
 
@@ -99,26 +105,37 @@ class EmailAgent:
             merchant_name:    Name to search in campaign.xlsx, e.g. "KFC".
             user_instruction: Optional style instruction from the user,
                               e.g. "Viet ngan gon, khong qua 150 tu".
+            campaign_info:    Optional dict with campaign fields (Campaign Name,
+                              Timeline, Scheme, Sponsor, Channel, CTA). Used when
+                              the merchant is not found in campaign.xlsx.
+            skip_review:      If True, return the generated email immediately
+                              without running the reviewer. Faster but no QA.
 
         Returns:
             dict — see class docstring for full structure.
             On error (merchant not found, API failure), returns a dict with "error" key.
         """
         # ------------------------------------------------------------------
-        # Step 1: Find merchant
+        # Step 1: Find merchant in Excel; fall back to user-provided info
         # ------------------------------------------------------------------
         campaign_data = self.reader.find_merchant(merchant_name)
         if not campaign_data:
-            return self._error_result(
-                merchant_name,
-                f"Merchant '{merchant_name}' not found in campaign.xlsx. "
-                "Please check the name and try again.",
-            )
+            if campaign_info:
+                campaign_data = {"Merchant": merchant_name}
+                campaign_data.update(campaign_info)
+            else:
+                return self._error_result(
+                    merchant_name,
+                    f"Merchant '{merchant_name}' not found in campaign.xlsx. "
+                    "Please check the name or provide campaign_info.",
+                )
 
         # ------------------------------------------------------------------
-        # Step 2: Load approved email samples for style reference
+        # Step 2: Load approved email samples; fall back to cross-merchant
         # ------------------------------------------------------------------
         approved_samples, samples_count, approved_files = self._load_approved_samples(merchant_name)
+        if samples_count == 0:
+            approved_samples, samples_count, approved_files = self._load_cross_merchant_samples()
 
         # ------------------------------------------------------------------
         # Step 3: Initial email generation
@@ -136,6 +153,22 @@ class EmailAgent:
         # the email as empty so the retry loop can still attempt a fix.
         if "error" in email and not email["subject"]:
             email = {"subject": "", "body": "", "raw_response": email.get("raw_response", "")}
+
+        # ------------------------------------------------------------------
+        # Step 3b: Skip review if requested — return immediately
+        # ------------------------------------------------------------------
+        if skip_review:
+            return {
+                "merchant":              campaign_data.get("Merchant", merchant_name),
+                "campaign":              campaign_data.get("Campaign Name", ""),
+                "subject":               email.get("subject", ""),
+                "body":                  email.get("body", ""),
+                "review":                {"score": None, "passed": None, "skipped": True},
+                "attempts":              1,
+                "approved_samples_used": samples_count,
+                "approved_files":        approved_files,
+                "generation_history":    [{"attempt": 1, "score": None, "reason": "Review skipped"}],
+            }
 
         # ------------------------------------------------------------------
         # Step 4: Initial review
@@ -248,6 +281,37 @@ class EmailAgent:
                     loaded_names.append(file.name)
             except OSError:
                 # Skip unreadable files rather than crashing.
+                continue
+
+        combined = "\n\n---\n\n".join(samples)
+        return combined, len(samples), loaded_names
+
+    def _load_cross_merchant_samples(self, max_files: int = 3) -> tuple[str, int, list[str]]:
+        """
+        Load the most recent approved emails regardless of merchant name.
+
+        Used as a fallback when no merchant-specific samples exist, so the
+        generator still gets style references from other approved emails.
+        """
+        if not APPROVED_EMAILS_DIR.exists():
+            return "", 0, []
+
+        all_files = [f for f in APPROVED_EMAILS_DIR.iterdir() if f.suffix == ".txt"]
+        if not all_files:
+            return "", 0, []
+
+        all_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+        selected = all_files[:max_files]
+
+        samples = []
+        loaded_names = []
+        for file in selected:
+            try:
+                content = file.read_text(encoding="utf-8").strip()
+                if content:
+                    samples.append(f"=== {file.name} ===\n{content}")
+                    loaded_names.append(file.name)
+            except OSError:
                 continue
 
         combined = "\n\n---\n\n".join(samples)
